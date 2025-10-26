@@ -89,86 +89,103 @@ main() {
         "" \
         "200"
 
-    # Test 2: Valid Employee (RED status)
+    # Test 2: Missing Authentication Token (401)
+    test_endpoint \
+        "Missing Authentication Token" \
+        "POST" \
+        "$API_ENDPOINT" \
+        '{"NationalNumber": "NAT1001"}' \
+        "401"
+
+    # Test 3: Invalid Token Format (401)
+    test_endpoint \
+        "Invalid Token Format" \
+        "POST" \
+        "$API_ENDPOINT" \
+        '{"NationalNumber": "NAT1001"}' \
+        "401" \
+        "Authorization: InvalidFormat"
+
+    # Test 4: Valid Employee (RED status) - WITH AUTH
     test_endpoint \
         "Valid Employee - RED Status" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1001"}' \
-        "200"
+        "200" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 3: Valid Employee (GREEN status)
+    # Test 5: Valid Employee (GREEN status) - WITH AUTH
     test_endpoint \
         "Valid Employee - GREEN Status" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1004"}' \
-        "200"
+        "200" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 4: Valid Employee (ORANGE status)
+    # Test 6: Valid Employee (ORANGE status) - WITH AUTH
     test_endpoint \
         "Valid Employee - ORANGE Status" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1002"}' \
-        "200"
+        "200" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 5: Invalid National Number
+    # Test 7: Invalid National Number - WITH AUTH
     test_endpoint \
         "Invalid National Number" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT9999"}' \
-        "404"
+        "404" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 6: Inactive User
+    # Test 8: Inactive User - WITH AUTH
     test_endpoint \
         "Inactive User" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1003"}' \
-        "406"
+        "406" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 7: Insufficient Data
+    # Test 9: Insufficient Data - WITH AUTH
     test_endpoint \
         "Insufficient Data" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1011"}' \
-        "422"
+        "422" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 8: Invalid Request Format
+    # Test 10: Invalid Request Format - WITH AUTH
     test_endpoint \
         "Invalid Request Format" \
         "POST" \
         "$API_ENDPOINT" \
         '{"InvalidField": "NAT1001"}' \
-        "400"
+        "400" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 9: Empty Request Body
+    # Test 11: Empty Request Body - WITH AUTH
     test_endpoint \
         "Empty Request Body" \
         "POST" \
         "$API_ENDPOINT" \
         '{}' \
-        "400"
+        "400" \
+        "Authorization: Bearer test-token-12345"
 
-    # Test 10: Malformed JSON
+    # Test 12: Malformed JSON - WITH AUTH
     test_endpoint \
         "Malformed JSON" \
         "POST" \
         "$API_ENDPOINT" \
         '{"NationalNumber": "NAT1001"' \
-        "400"
-
-    # Test 11: With Authentication Token (if enabled)
-    test_endpoint \
-        "With Authentication Token" \
-        "POST" \
-        "$API_ENDPOINT" \
-        '{"NationalNumber": "NAT1001"}' \
-        "200" \
-        "Authorization: Bearer test-token-123"
+        "400" \
+        "Authorization: Bearer test-token-12345"
 
     log_success "All API tests completed!"
 }

@@ -26,6 +26,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -47,6 +51,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -68,6 +76,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -89,6 +101,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -110,6 +126,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -131,6 +151,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -152,6 +176,10 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {
@@ -166,17 +194,13 @@
       }
     },
     {
-      "name": "With Authentication Token",
+      "name": "Without Authentication Token (401)",
       "request": {
         "method": "POST",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "Bearer {{authToken}}"
           }
         ],
         "body": {

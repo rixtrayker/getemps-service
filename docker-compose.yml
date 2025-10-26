@@ -52,7 +52,7 @@ services:
       - API_SECRET_KEY=your-secret-key-here
       - GIN_MODE=release
       - CACHE_ENABLED=true
-      - TOKEN_REQUIRED=false
+      - TOKEN_REQUIRED=true
     depends_on:
       postgres:
         condition: service_healthy
