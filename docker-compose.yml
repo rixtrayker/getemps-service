@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: getemps_db
+    environment:
+      POSTGRES_DB: getemps_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    networks:
+      - getemps_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: getemps_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - getemps_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: getemps_api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres123
+      - DB_NAME=getemps_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_SECRET_KEY=your-secret-key-here
+      - GIN_MODE=release
+      - CACHE_ENABLED=true
+      - TOKEN_REQUIRED=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - getemps_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  getemps_network:
+    driver: bridge

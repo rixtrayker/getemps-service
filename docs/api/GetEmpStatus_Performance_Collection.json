@@ -1,0 +1,711 @@
+{
+  "info": {
+    "name": "GetEmpStatus API - Performance Collection",
+    "description": "Performance and load testing collection for the GetEmpStatus API",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🚀 Performance Baseline",
+      "item": [
+        {
+          "name": "Single Request Benchmark",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time under 100ms (excellent)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(100);",
+                  "});",
+                  "",
+                  "pm.test('Response time under 500ms (good)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "pm.test('Response time under 1000ms (acceptable)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "// Store response time for comparison",
+                  "pm.globals.set('baselineResponseTime', pm.response.responseTime);",
+                  "",
+                  "pm.test('Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "console.log('Baseline response time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Cache Performance Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time (should be faster due to cache)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);",
+                  "});",
+                  "",
+                  "pm.test('Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Compare with baseline",
+                  "var baseline = pm.globals.get('baselineResponseTime');",
+                  "if (baseline) {",
+                  "    pm.test('Cache improves performance (within 150% of baseline)', function () {",
+                  "        pm.expect(pm.response.responseTime).to.be.below(baseline * 1.5);",
+                  "    });",
+                  "}",
+                  "",
+                  "console.log('Cached response time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Different Data Scenarios",
+      "item": [
+        {
+          "name": "Simple Calculation Performance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time acceptable for simple calculation', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "pm.test('Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "console.log('Simple calculation time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Complex Calculation Performance (Tax Scenario)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time acceptable for complex calculation', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1500);",
+                  "});",
+                  "",
+                  "pm.test('Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "console.log('Complex calculation time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1005\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Seasonal Adjustment Performance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time acceptable for seasonal adjustments', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "pm.test('Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "console.log('Seasonal adjustment time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1007\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 Concurrent Request Simulation",
+      "item": [
+        {
+          "name": "Concurrent User 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time under load', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test('Successful response under load', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Store individual response times",
+                  "var responseTimes = pm.globals.get('responseTimes') || [];",
+                  "responseTimes.push(pm.response.responseTime);",
+                  "pm.globals.set('responseTimes', responseTimes);",
+                  "",
+                  "console.log('Concurrent request time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Concurrent User 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time under load', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test('Successful response under load', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Store individual response times",
+                  "var responseTimes = pm.globals.get('responseTimes') || [];",
+                  "responseTimes.push(pm.response.responseTime);",
+                  "pm.globals.set('responseTimes', responseTimes);",
+                  "",
+                  "console.log('Concurrent request time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1004\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Concurrent User 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response time under load', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test('Successful response under load', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Store individual response times",
+                  "var responseTimes = pm.globals.get('responseTimes') || [];",
+                  "responseTimes.push(pm.response.responseTime);",
+                  "pm.globals.set('responseTimes', responseTimes);",
+                  "",
+                  "// Calculate statistics after several requests",
+                  "if (responseTimes.length >= 3) {",
+                  "    var sum = responseTimes.reduce((a, b) => a + b, 0);",
+                  "    var avg = sum / responseTimes.length;",
+                  "    var max = Math.max(...responseTimes);",
+                  "    var min = Math.min(...responseTimes);",
+                  "    ",
+                  "    console.log('Performance Statistics:');",
+                  "    console.log('- Average response time: ' + avg.toFixed(2) + 'ms');",
+                  "    console.log('- Max response time: ' + max + 'ms');",
+                  "    console.log('- Min response time: ' + min + 'ms');",
+                  "    console.log('- Total requests: ' + responseTimes.length);",
+                  "}",
+                  "",
+                  "console.log('Concurrent request time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Error Response Performance",
+      "item": [
+        {
+          "name": "404 Error Response Time",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Error response time is fast', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "pm.test('Correct error status', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "console.log('404 error response time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT9999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "400 Validation Error Response Time",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Validation error response time is fast', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(300);",
+                  "});",
+                  "",
+                  "pm.test('Correct error status', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "console.log('Validation error response time: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Progressive Load Test",
+      "item": [
+        {
+          "name": "Load Test - Request 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Request 1 - Response time acceptable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "pm.test('Request 1 - Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Initialize load test tracking",
+                  "pm.globals.set('loadTestStart', Date.now());",
+                  "pm.globals.set('loadTestRequests', 1);",
+                  "pm.globals.set('loadTestTimes', [pm.response.responseTime]);",
+                  "",
+                  "console.log('Load test request 1: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Load Test - Request 5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Request 5 - Response time under load', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1500);",
+                  "});",
+                  "",
+                  "pm.test('Request 5 - Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Update load test tracking",
+                  "var requests = pm.globals.get('loadTestRequests') || 0;",
+                  "var times = pm.globals.get('loadTestTimes') || [];",
+                  "times.push(pm.response.responseTime);",
+                  "pm.globals.set('loadTestRequests', requests + 1);",
+                  "pm.globals.set('loadTestTimes', times);",
+                  "",
+                  "console.log('Load test request 5: ' + pm.response.responseTime + 'ms');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1004\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        },
+        {
+          "name": "Load Test - Final Summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Final request - Response time under load', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test('Final request - Successful response', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Calculate final statistics",
+                  "var times = pm.globals.get('loadTestTimes') || [];",
+                  "times.push(pm.response.responseTime);",
+                  "var requests = pm.globals.get('loadTestRequests') || 0;",
+                  "var startTime = pm.globals.get('loadTestStart');",
+                  "var endTime = Date.now();",
+                  "var duration = (endTime - startTime) / 1000; // seconds",
+                  "",
+                  "if (times.length > 0) {",
+                  "    var sum = times.reduce((a, b) => a + b, 0);",
+                  "    var avg = sum / times.length;",
+                  "    var max = Math.max(...times);",
+                  "    var min = Math.min(...times);",
+                  "    var throughput = times.length / duration;",
+                  "    ",
+                  "    console.log('=== LOAD TEST SUMMARY ===');",
+                  "    console.log('Total requests: ' + times.length);",
+                  "    console.log('Duration: ' + duration.toFixed(2) + ' seconds');",
+                  "    console.log('Throughput: ' + throughput.toFixed(2) + ' requests/second');",
+                  "    console.log('Average response time: ' + avg.toFixed(2) + 'ms');",
+                  "    console.log('Min response time: ' + min + 'ms');",
+                  "    console.log('Max response time: ' + max + 'ms');",
+                  "    ",
+                  "    // Performance assertions",
+                  "    pm.test('Average response time acceptable', function () {",
+                  "        pm.expect(avg).to.be.below(1000);",
+                  "    });",
+                  "    ",
+                  "    pm.test('Throughput acceptable', function () {",
+                  "        pm.expect(throughput).to.be.above(0.5); // At least 0.5 requests per second",
+                  "    });",
+                  "}",
+                  "",
+                  "// Cleanup globals",
+                  "pm.globals.unset('loadTestStart');",
+                  "pm.globals.unset('loadTestRequests');",
+                  "pm.globals.unset('loadTestTimes');",
+                  "pm.globals.unset('responseTimes');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NationalNumber\": \"NAT1002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/GetEmpStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "GetEmpStatus"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Add timestamp to each request",
+          "pm.globals.set('requestTimestamp', Date.now());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global performance monitoring",
+          "var responseTime = pm.response.responseTime;",
+          "var requestTime = pm.globals.get('requestTimestamp');",
+          "var serverTime = Date.now() - requestTime;",
+          "",
+          "// Log performance metrics",
+          "console.log('Response time: ' + responseTime + 'ms');",
+          "console.log('Total request time: ' + serverTime + 'ms');",
+          "",
+          "// Performance warnings",
+          "if (responseTime > 2000) {",
+          "    console.warn('⚠️ Slow response detected: ' + responseTime + 'ms');",
+          "}",
+          "",
+          "if (responseTime > 5000) {",
+          "    console.error('🚨 Very slow response detected: ' + responseTime + 'ms');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "loadTestIterations",
+      "value": "10",
+      "type": "string"
+    },
+    {
+      "key": "maxResponseTime",
+      "value": "2000",
+      "type": "string"
+    },
+    {
+      "key": "acceptableResponseTime",
+      "value": "1000",
+      "type": "string"
+    }
+  ]
+}

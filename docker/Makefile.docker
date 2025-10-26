@@ -1,0 +1,320 @@
+# Docker-specific Makefile for GetEmpStatus Service
+# ===================================================
+
+# Docker configuration
+DOCKER_REGISTRY ?= localhost:5000
+IMAGE_NAME := getemps-service
+IMAGE_TAG ?= latest
+FULL_IMAGE_NAME := $(DOCKER_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
+
+# Build arguments
+BUILD_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+VCS_REF := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
+
+# Colors
+GREEN := \033[32m
+YELLOW := \033[33m
+RED := \033[31m
+BLUE := \033[34m
+NC := \033[0m
+
+.PHONY: docker-help
+docker-help: ## Show Docker-specific commands
+	@echo "$(BLUE)GetEmpStatus Service - Docker Commands:$(NC)"
+	@echo ""
+	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "  $(GREEN)%-20s$(NC) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@echo ""
+
+# =================================
+# Image Build Commands
+# =================================
+
+.PHONY: build-dev
+build-dev: ## Build development image
+	@echo "$(YELLOW)Building development image...$(NC)"
+	@docker build \
+		--target builder \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(VERSION) \
+		-t $(IMAGE_NAME):dev \
+		-f Dockerfile \
+		..
+	@echo "$(GREEN)✓ Development image built: $(IMAGE_NAME):dev$(NC)"
+
+.PHONY: build-prod
+build-prod: ## Build production image
+	@echo "$(YELLOW)Building production image...$(NC)"
+	@docker build \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(VERSION) \
+		-t $(IMAGE_NAME):$(IMAGE_TAG) \
+		-t $(IMAGE_NAME):latest \
+		-f Dockerfile \
+		..
+	@echo "$(GREEN)✓ Production image built: $(IMAGE_NAME):$(IMAGE_TAG)$(NC)"
+
+.PHONY: build-multi-arch
+build-multi-arch: ## Build multi-architecture image
+	@echo "$(YELLOW)Building multi-architecture image...$(NC)"
+	@docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(VERSION) \
+		-t $(FULL_IMAGE_NAME) \
+		-f Dockerfile \
+		--push \
+		..
+	@echo "$(GREEN)✓ Multi-arch image built and pushed$(NC)"
+
+# =================================
+# Image Management
+# =================================
+
+.PHONY: tag
+tag: ## Tag image for registry
+	@echo "$(YELLOW)Tagging image for registry...$(NC)"
+	@docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(FULL_IMAGE_NAME)
+	@echo "$(GREEN)✓ Image tagged: $(FULL_IMAGE_NAME)$(NC)"
+
+.PHONY: push
+push: tag ## Push image to registry
+	@echo "$(YELLOW)Pushing image to registry...$(NC)"
+	@docker push $(FULL_IMAGE_NAME)
+	@echo "$(GREEN)✓ Image pushed: $(FULL_IMAGE_NAME)$(NC)"
+
+.PHONY: pull
+pull: ## Pull image from registry
+	@echo "$(YELLOW)Pulling image from registry...$(NC)"
+	@docker pull $(FULL_IMAGE_NAME)
+	@echo "$(GREEN)✓ Image pulled: $(FULL_IMAGE_NAME)$(NC)"
+
+.PHONY: images
+images: ## List all project images
+	@echo "$(YELLOW)Project images:$(NC)"
+	@docker images | grep -E "($(IMAGE_NAME)|REPOSITORY)" || echo "No project images found"
+
+.PHONY: clean-images
+clean-images: ## Remove all project images
+	@echo "$(YELLOW)Cleaning project images...$(NC)"
+	@docker images -q $(IMAGE_NAME) | xargs -r docker rmi -f
+	@docker system prune -f
+	@echo "$(GREEN)✓ Images cleaned$(NC)"
+
+# =================================
+# Container Operations
+# =================================
+
+.PHONY: run-detached
+run-detached: ## Run container in detached mode
+	@echo "$(YELLOW)Starting container in detached mode...$(NC)"
+	@docker run -d \
+		--name getemps-api \
+		-p 8080:8080 \
+		--env-file ../.env \
+		$(IMAGE_NAME):$(IMAGE_TAG)
+	@echo "$(GREEN)✓ Container started: getemps-api$(NC)"
+
+.PHONY: run-interactive
+run-interactive: ## Run container interactively
+	@echo "$(YELLOW)Starting container interactively...$(NC)"
+	@docker run -it --rm \
+		-p 8080:8080 \
+		--env-file ../.env \
+		$(IMAGE_NAME):$(IMAGE_TAG)
+
+.PHONY: shell
+shell: ## Open shell in running container
+	@echo "$(YELLOW)Opening shell in container...$(NC)"
+	@docker exec -it getemps-api /bin/sh
+
+.PHONY: logs-container
+logs-container: ## Show container logs
+	@docker logs -f getemps-api
+
+.PHONY: stop-container
+stop-container: ## Stop running container
+	@echo "$(YELLOW)Stopping container...$(NC)"
+	@docker stop getemps-api || true
+	@docker rm getemps-api || true
+	@echo "$(GREEN)✓ Container stopped$(NC)"
+
+# =================================
+# Development & Debugging
+# =================================
+
+.PHONY: debug-build
+debug-build: ## Build image with debug info
+	@echo "$(YELLOW)Building debug image...$(NC)"
+	@docker build \
+		--build-arg CGO_ENABLED=1 \
+		--build-arg BUILD_FLAGS="-gcflags=all=-N -l" \
+		--target builder \
+		-t $(IMAGE_NAME):debug \
+		-f Dockerfile \
+		..
+	@echo "$(GREEN)✓ Debug image built$(NC)"
+
+.PHONY: debug-run
+debug-run: debug-build ## Run container with debugging enabled
+	@echo "$(YELLOW)Starting debug container...$(NC)"
+	@docker run -it --rm \
+		-p 8080:8080 \
+		-p 2345:2345 \
+		--env-file ../.env \
+		$(IMAGE_NAME):debug
+
+.PHONY: inspect
+inspect: ## Inspect image details
+	@echo "$(YELLOW)Inspecting image...$(NC)"
+	@docker inspect $(IMAGE_NAME):$(IMAGE_TAG) | jq '.[0] | {Id, Created, Size, Config: {ExposedPorts, Env}, Architecture}'
+
+.PHONY: dive
+dive: ## Analyze image layers (requires dive tool)
+	@echo "$(YELLOW)Analyzing image layers...$(NC)"
+	@if command -v dive >/dev/null 2>&1; then \
+		dive $(IMAGE_NAME):$(IMAGE_TAG); \
+	else \
+		echo "$(RED)dive not installed. Install from: https://github.com/wagoodman/dive$(NC)"; \
+	fi
+
+# =================================
+# Security & Quality
+# =================================
+
+.PHONY: scan-security
+scan-security: ## Scan image for security vulnerabilities
+	@echo "$(YELLOW)Scanning image for vulnerabilities...$(NC)"
+	@if command -v trivy >/dev/null 2>&1; then \
+		trivy image $(IMAGE_NAME):$(IMAGE_TAG); \
+	else \
+		echo "$(RED)trivy not installed. Install from: https://github.com/aquasecurity/trivy$(NC)"; \
+	fi
+
+.PHONY: lint-dockerfile
+lint-dockerfile: ## Lint Dockerfile
+	@echo "$(YELLOW)Linting Dockerfile...$(NC)"
+	@if command -v hadolint >/dev/null 2>&1; then \
+		hadolint Dockerfile; \
+	else \
+		echo "$(RED)hadolint not installed. Install from: https://github.com/hadolint/hadolint$(NC)"; \
+	fi
+
+.PHONY: benchmark-image
+benchmark-image: ## Benchmark image startup time
+	@echo "$(YELLOW)Benchmarking image startup time...$(NC)"
+	@time docker run --rm $(IMAGE_NAME):$(IMAGE_TAG) echo "Container started"
+
+# =================================
+# Registry Operations
+# =================================
+
+.PHONY: login
+login: ## Login to Docker registry
+	@echo "$(YELLOW)Logging into registry...$(NC)"
+	@docker login $(DOCKER_REGISTRY)
+
+.PHONY: logout
+logout: ## Logout from Docker registry
+	@echo "$(YELLOW)Logging out from registry...$(NC)"
+	@docker logout $(DOCKER_REGISTRY)
+
+.PHONY: registry-info
+registry-info: ## Show registry information
+	@echo "$(BLUE)Registry: $(DOCKER_REGISTRY)$(NC)"
+	@echo "$(BLUE)Image: $(IMAGE_NAME)$(NC)"
+	@echo "$(BLUE)Tag: $(IMAGE_TAG)$(NC)"
+	@echo "$(BLUE)Full name: $(FULL_IMAGE_NAME)$(NC)"
+
+# =================================
+# Multi-stage Build Targets
+# =================================
+
+.PHONY: build-base
+build-base: ## Build only base stage
+	@echo "$(YELLOW)Building base stage...$(NC)"
+	@docker build \
+		--target golang \
+		-t $(IMAGE_NAME):base \
+		-f Dockerfile \
+		..
+	@echo "$(GREEN)✓ Base stage built$(NC)"
+
+.PHONY: build-builder
+build-builder: ## Build only builder stage
+	@echo "$(YELLOW)Building builder stage...$(NC)"
+	@docker build \
+		--target builder \
+		-t $(IMAGE_NAME):builder \
+		-f Dockerfile \
+		..
+	@echo "$(GREEN)✓ Builder stage built$(NC)"
+
+# =================================
+# Cleanup Commands
+# =================================
+
+.PHONY: prune
+prune: ## Remove unused Docker resources
+	@echo "$(YELLOW)Pruning unused Docker resources...$(NC)"
+	@docker system prune -af --volumes
+	@echo "$(GREEN)✓ Docker resources pruned$(NC)"
+
+.PHONY: clean-all
+clean-all: stop-container clean-images prune ## Complete cleanup
+	@echo "$(GREEN)✓ Complete cleanup finished$(NC)"
+
+# =================================
+# Health & Monitoring
+# =================================
+
+.PHONY: health-check
+health-check: ## Check container health
+	@echo "$(YELLOW)Checking container health...$(NC)"
+	@docker exec getemps-api wget --no-verbose --tries=1 --spider http://localhost:8080/health || echo "Health check failed"
+
+.PHONY: stats
+stats: ## Show container resource usage
+	@echo "$(YELLOW)Container resource usage:$(NC)"
+	@docker stats getemps-api --no-stream
+
+.PHONY: top
+top: ## Show running processes in container
+	@echo "$(YELLOW)Running processes in container:$(NC)"
+	@docker top getemps-api
+
+# =================================
+# Export/Import Commands
+# =================================
+
+.PHONY: save
+save: ## Save image to tar file
+	@echo "$(YELLOW)Saving image to tar file...$(NC)"
+	@docker save $(IMAGE_NAME):$(IMAGE_TAG) | gzip > $(IMAGE_NAME)-$(IMAGE_TAG).tar.gz
+	@echo "$(GREEN)✓ Image saved to $(IMAGE_NAME)-$(IMAGE_TAG).tar.gz$(NC)"
+
+.PHONY: load
+load: ## Load image from tar file
+	@echo "$(YELLOW)Loading image from tar file...$(NC)"
+	@gunzip -c $(IMAGE_NAME)-$(IMAGE_TAG).tar.gz | docker load
+	@echo "$(GREEN)✓ Image loaded$(NC)"
+
+# =================================
+# Development Workflows
+# =================================
+
+.PHONY: dev-workflow
+dev-workflow: build-dev run-detached ## Complete development workflow
+	@echo "$(GREEN)✓ Development environment ready$(NC)"
+	@echo "$(BLUE)API available at: http://localhost:8080$(NC)"
+	@echo "$(BLUE)Container logs: make logs-container$(NC)"
+
+.PHONY: prod-workflow
+prod-workflow: build-prod push ## Complete production workflow
+	@echo "$(GREEN)✓ Production image ready and pushed$(NC)"
+
+# Default target
+.DEFAULT_GOAL := docker-help

@@ -1,0 +1,206 @@
+{
+  "info": {
+    "name": "GetEmpStatus API",
+    "description": "Employee Status API with salary calculations and business logic",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee Status - Success (RED)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee Status - Success (GREEN)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1004\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee Status - Success (ORANGE)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1002\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "Invalid National Number (404)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT9999\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "User Not Active (406)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1003\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "Insufficient Data (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1011\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "Invalid Request Format (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"InvalidField\": \"NAT1001\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    },
+    {
+      "name": "With Authentication Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"NationalNumber\": \"NAT1001\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/GetEmpStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "GetEmpStatus"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "your-test-token-here",
+      "type": "string"
+    }
+  ]
+}

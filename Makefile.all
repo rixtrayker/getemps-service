@@ -1,0 +1,76 @@
+# Master Makefile for GetEmpStatus Service
+# =======================================
+# This file includes all specialized Makefiles and provides a unified interface
+
+# Include specialized Makefiles
+include docker/Makefile.docker
+include scripts/Makefile.test
+
+# Override help to show all available commands
+.PHONY: help-all
+help-all: ## Show all available commands from all Makefiles
+	@echo "\033[34mGetEmpStatus Service - All Available Commands:\033[0m"
+	@echo ""
+	@echo "\033[32m=== Main Development Commands ===\033[0m"
+	@$(MAKE) help
+	@echo ""
+	@echo "\033[32m=== Docker Commands ===\033[0m"
+	@$(MAKE) docker-help
+	@echo ""
+	@echo "\033[32m=== Testing Commands ===\033[0m"
+	@$(MAKE) test-help
+	@echo ""
+	@echo "\033[33mTip: You can also run commands from specific Makefiles:\033[0m"
+	@echo "  make -f docker/Makefile.docker <command>"
+	@echo "  make -f scripts/Makefile.test <command>"
+	@echo ""
+
+# Quick aliases for commonly used commands
+.PHONY: start
+start: up ## Alias for 'up' - Start all services
+
+.PHONY: stop
+stop: down ## Alias for 'down' - Stop all services
+
+.PHONY: restart-all
+restart-all: restart ## Alias for 'restart' - Restart all services
+
+.PHONY: test-quick
+test-quick: test-unit-fast ## Quick unit tests
+
+.PHONY: test-full
+test-full: test-all ## Full test suite
+
+.PHONY: docker-build-all
+docker-build-all: build-prod ## Build production Docker image
+
+.PHONY: dev-setup
+dev-setup: setup install-tools ## Complete development setup
+
+.PHONY: prod-deploy
+prod-deploy: ci docker-build-all push ## Complete production deployment
+
+# Enhanced commands that combine multiple operations
+.PHONY: full-reset
+full-reset: clean-all db-reset up ## Complete environment reset
+
+.PHONY: full-test
+full-test: test-all test-load-light ## Run all tests including light load test
+
+.PHONY: quick-start
+quick-start: ## Quick start for new developers
+	@echo "\033[33mQuick start for GetEmpStatus Service...\033[0m"
+	@$(MAKE) setup
+	@$(MAKE) up
+	@echo ""
+	@echo "\033[32m✓ Service is now running!\033[0m"
+	@echo "\033[34mAPI: http://localhost:8080/api/GetEmpStatus\033[0m"
+	@echo "\033[34mHealth: http://localhost:8080/health\033[0m"
+	@echo ""
+	@echo "\033[33mNext steps:\033[0m"
+	@echo "  make test-api     # Test the API"
+	@echo "  make logs         # View logs"
+	@echo "  make dev          # Start development mode"
+
+# Default target shows all help
+.DEFAULT_GOAL := help-all
