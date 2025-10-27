@@ -4,8 +4,15 @@ A RESTful web service that retrieves employee information, processes salary data
 
 ## Status Badges
 
-[![CI](https://github.com/rixtrayker/go-backend-test/workflows/CI%20Pipeline/badge.svg)](https://github.com/rixtrayker/go-backend-test/actions)
-[![Security](https://github.com/rixtrayker/go-backend-test/workflows/Security%20Scanning/badge.svg)](https://github.com/rixtrayker/go-backend-test/actions)
+[![CI Pipeline](https://github.com/rixtrayker/getemps-service/workflows/CI%20Pipeline/badge.svg)](https://github.com/rixtrayker/getemps-service/actions)
+[![CD Pipeline](https://github.com/rixtrayker/getemps-service/workflows/CD%20Pipeline/badge.svg)](https://github.com/rixtrayker/getemps-service/actions)
+[![GolangCI-Lint](https://github.com/rixtrayker/getemps-service/workflows/GolangCI-Lint/badge.svg)](https://github.com/rixtrayker/getemps-service/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rixtrayker/getemps-service)](https://goreportcard.com/report/github.com/rixtrayker/getemps-service)
+[![codecov](https://codecov.io/gh/rixtrayker/getemps-service/branch/main/graph/badge.svg)](https://codecov.io/gh/rixtrayker/getemps-service)
+[![Go Version](https://img.shields.io/badge/go-1.23+-blue.svg)](https://golang.org/dl/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+> **Badge Status**: CI/CD pipelines run tests, builds, and deployments. Go Report Card analyzes code quality. CodeCov tracks test coverage. All badges link to their respective detailed reports.
 
 ## Features
 
@@ -49,7 +56,7 @@ This will:
 
 1. **Clone and setup**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/rixtrayker/getemps-service.git
    cd getemps-service
    make setup  # or: cp .env.example .env && go mod download
    ```
