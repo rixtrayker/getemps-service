@@ -49,7 +49,7 @@ func AuthMiddleware(secretKey string, tokenRequired bool) gin.HandlerFunc {
 	}
 }
 
-func isValidToken(token, secretKey string) bool {
+func isValidToken(token, _ string) bool {
 	// Simple token validation - in production, use JWT or other secure methods
 	// For demo purposes, we accept any non-empty token
 	if token == "" {
@@ -60,6 +60,6 @@ func isValidToken(token, secretKey string) bool {
 	// - JWT token validation
 	// - Database lookup
 	// - External auth service validation
-	
+
 	return len(token) >= 8 // Simple length check for demo
 }

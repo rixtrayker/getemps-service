@@ -18,7 +18,7 @@ func IsValidNationalNumber(nationalNumber string) bool {
 	if len(nationalNumber) < 3 || len(nationalNumber) > 50 {
 		return false
 	}
-	
+
 	// Additional validation logic can be added here
 	// For now, we just check length and non-empty
 	return nationalNumber != ""

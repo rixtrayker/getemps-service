@@ -52,7 +52,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			logger.Errorf("Failed to close database connection: %v", err)
+		}
+	}()
 
 	logger.Info("Database connection established")
 
@@ -72,9 +76,9 @@ func main() {
 
 	// Initialize services
 	processStatusService := service.NewProcessStatusService(
-		userRepo, 
-		salaryRepo, 
-		appCache, 
+		userRepo,
+		salaryRepo,
+		appCache,
 		time.Duration(cfg.Cache.TTL)*time.Second,
 	)
 
@@ -86,8 +90,9 @@ func main() {
 
 	// Setup HTTP server
 	server := &http.Server{
-		Addr:    ":" + cfg.App.Port,
-		Handler: router,
+		Addr:              ":" + cfg.App.Port,
+		Handler:           router,
+		ReadHeaderTimeout: 30 * time.Second,
 	}
 
 	// Start server in a goroutine
@@ -110,7 +115,7 @@ func main() {
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server forced to shutdown: %v", err)
+		logger.Errorf("Server forced to shutdown: %v", err)
 	}
 
 	logger.Info("Server exited")

@@ -12,11 +12,11 @@ import (
 )
 
 type ProcessStatusService struct {
-	userRepo       repository.UserRepository
-	salaryRepo     repository.SalaryRepository
-	calculator     *SalaryCalculator
-	cache          cache.Cache
-	cacheTTL       time.Duration
+	userRepo   repository.UserRepository
+	salaryRepo repository.SalaryRepository
+	calculator *SalaryCalculator
+	cache      cache.Cache
+	cacheTTL   time.Duration
 }
 
 func NewProcessStatusService(

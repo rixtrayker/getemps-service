@@ -1,6 +1,9 @@
+version: "2"
+
+run:
+  timeout: 5m
+
 linters:
-  # Using 'enable' means only these linters will run, disabling all others.
-  # The indentation has been fixed to use standard spaces.
   enable:
     - errcheck
     - gosimple
@@ -20,16 +23,8 @@ linters:
     - unconvert
     - unparam
     - whitespace
-    - gofumpt
     - godot
-    - exportloopref
-    - nolintlint
-
-run:
-  # Set a 5-minute timeout for the linter run
-  timeout: 5m
 
 issues:
-  # Setting these to 0 means unlimited issues
   max-issues-per-linter: 0
   max-same-issues: 0

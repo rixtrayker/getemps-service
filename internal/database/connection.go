@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	// PostgreSQL driver.
 	_ "github.com/lib/pq"
 )
 

@@ -16,7 +16,7 @@ type CustomLogger struct {
 
 func NewCustomLogger(db *sqlx.DB, logLevel string, toDB bool) *CustomLogger {
 	logger := logrus.New()
-	
+
 	level, err := logrus.ParseLevel(logLevel)
 	if err != nil {
 		level = logrus.InfoLevel
@@ -32,9 +32,9 @@ func NewCustomLogger(db *sqlx.DB, logLevel string, toDB bool) *CustomLogger {
 
 func (l *CustomLogger) Info(ctx context.Context, message string, fields map[string]interface{}) {
 	l.logger.WithFields(fields).Info(message)
-	
+
 	if l.toDB {
-		l.logToDB("INFO", message, fields, ctx)
+		l.logToDB(ctx, "INFO", message, fields)
 	}
 }
 
@@ -45,31 +45,31 @@ func (l *CustomLogger) Error(ctx context.Context, message string, err error, fie
 	if err != nil {
 		fields["error"] = err.Error()
 	}
-	
+
 	l.logger.WithFields(fields).Error(message)
-	
+
 	if l.toDB {
-		l.logToDB("ERROR", message, fields, ctx)
+		l.logToDB(ctx, "ERROR", message, fields)
 	}
 }
 
 func (l *CustomLogger) Warn(ctx context.Context, message string, fields map[string]interface{}) {
 	l.logger.WithFields(fields).Warn(message)
-	
+
 	if l.toDB {
-		l.logToDB("WARN", message, fields, ctx)
+		l.logToDB(ctx, "WARN", message, fields)
 	}
 }
 
 func (l *CustomLogger) Debug(ctx context.Context, message string, fields map[string]interface{}) {
 	l.logger.WithFields(fields).Debug(message)
-	
+
 	if l.toDB {
-		l.logToDB("DEBUG", message, fields, ctx)
+		l.logToDB(ctx, "DEBUG", message, fields)
 	}
 }
 
-func (l *CustomLogger) logToDB(level, message string, fields map[string]interface{}, ctx context.Context) {
+func (l *CustomLogger) logToDB(ctx context.Context, level, message string, fields map[string]interface{}) {
 	if l.db == nil {
 		return
 	}

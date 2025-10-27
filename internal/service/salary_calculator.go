@@ -4,6 +4,12 @@ import (
 	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
+const (
+	StatusGreen  = "GREEN"
+	StatusOrange = "ORANGE"
+	StatusRed    = "RED"
+)
+
 type SalaryCalculator struct{}
 
 func NewSalaryCalculator() *SalaryCalculator {
@@ -23,7 +29,7 @@ func (sc *SalaryCalculator) CalculateEmployeeStatus(salaries []models.Salary) *S
 			AverageSalary: 0,
 			HighestSalary: 0,
 			SumOfSalaries: 0,
-			Status:        "RED",
+			Status:        StatusRed,
 		}
 	}
 
@@ -48,12 +54,12 @@ func (sc *SalaryCalculator) applySeasonalAdjustments(salaries []models.Salary) [
 
 		// December: +10% holiday bonus
 		if salary.Month == 12 {
-			adjustedSalary = adjustedSalary * 1.10
+			adjustedSalary *= 1.10
 		}
 
 		// Summer months (June, July, August): -5% deduction
 		if salary.Month == 6 || salary.Month == 7 || salary.Month == 8 {
-			adjustedSalary = adjustedSalary * 0.95
+			adjustedSalary *= 0.95
 		}
 
 		adjusted[i] = adjustedSalary
@@ -89,7 +95,7 @@ func (sc *SalaryCalculator) calculateFinalStats(salaries []float64) *SalaryCalcu
 			AverageSalary: 0,
 			HighestSalary: 0,
 			SumOfSalaries: 0,
-			Status:        "RED",
+			Status:        StatusRed,
 		}
 	}
 
@@ -119,11 +125,12 @@ func (sc *SalaryCalculator) calculateFinalStats(salaries []float64) *SalaryCalcu
 }
 
 func (sc *SalaryCalculator) determineStatus(averageSalary float64) string {
-	if averageSalary > 2000 {
-		return "GREEN"
-	} else if averageSalary == 2000 {
-		return "ORANGE"
-	} else {
-		return "RED"
+	switch {
+	case averageSalary > 2000:
+		return StatusGreen
+	case averageSalary == 2000:
+		return StatusOrange
+	default:
+		return StatusRed
 	}
 }
