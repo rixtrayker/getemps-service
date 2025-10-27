@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rixtrayker/getemps-service/internal/models"
@@ -52,7 +53,7 @@ func (h *EmployeeHandler) GetEmployeeStatus(c *gin.Context) {
 func (h *EmployeeHandler) HealthCheck(c *gin.Context) {
 	response := gin.H{
 		"status":    "healthy",
-		"timestamp": gin.H{"now": "2025-10-26T14:30:00Z"},
+		"timestamp": time.Now().UTC().Format(time.RFC3339),
 	}
 	c.JSON(http.StatusOK, response)
 }

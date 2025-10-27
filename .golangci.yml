@@ -15,6 +15,15 @@ linters:
     - goconst
     - gofmt
     - goimports
+    - revive
+    - gocritic
+    - unconvert
+    - unparam
+    - whitespace
+    - gofumpt
+    - godot
+    - exportloopref
+    - nolintlint
 
 run:
   timeout: 5m

@@ -55,7 +55,7 @@ func (s *ProcessStatusService) GetEmployeeStatus(ctx context.Context, nationalNu
 		return nil, fmt.Errorf("failed to fetch user: %w", err)
 	}
 
-	// Step 2: Check if user is active
+	// Step 3: Check if user is active
 	if !user.IsActive {
 		return nil, &AppError{
 			Code:    406,
@@ -63,7 +63,7 @@ func (s *ProcessStatusService) GetEmployeeStatus(ctx context.Context, nationalNu
 		}
 	}
 
-	// Step 3: Check salary records count
+	// Step 4: Check salary records count
 	salaryCount, err := s.salaryRepo.CountByUserID(ctx, user.ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to count salary records: %w", err)
@@ -76,16 +76,16 @@ func (s *ProcessStatusService) GetEmployeeStatus(ctx context.Context, nationalNu
 		}
 	}
 
-	// Step 4: Fetch salary records
+	// Step 5: Fetch salary records
 	salaries, err := s.salaryRepo.GetByUserID(ctx, user.ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch salary records: %w", err)
 	}
 
-	// Step 5: Calculate salary statistics and status
+	// Step 6: Calculate salary statistics and status
 	calculation := s.calculator.CalculateEmployeeStatus(salaries)
 
-	// Step 6: Build response
+	// Step 7: Build response
 	employeeInfo := &models.EmployeeInfo{
 		ID:             user.ID,
 		Username:       user.Username,
@@ -102,7 +102,7 @@ func (s *ProcessStatusService) GetEmployeeStatus(ctx context.Context, nationalNu
 		LastUpdated: time.Now(),
 	}
 
-	// Step 7: Cache the result
+	// Step 8: Cache the result
 	if s.cache != nil {
 		cacheKey := cache.GenerateCacheKey(nationalNumber)
 		s.cache.Set(cacheKey, employeeInfo, s.cacheTTL)
