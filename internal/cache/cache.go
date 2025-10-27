@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/patrickmn/go-cache"
-	"github.com/yourusername/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
 type Cache interface {

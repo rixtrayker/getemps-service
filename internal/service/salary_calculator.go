@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/yourusername/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
 type SalaryCalculator struct{}

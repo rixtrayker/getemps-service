@@ -2,6 +2,11 @@
 
 A RESTful web service that retrieves employee information, processes salary data, and calculates employee status based on defined business logic.
 
+## Status Badges
+
+[![CI](https://github.com/rixtrayker/go-backend-test/workflows/CI%20Pipeline/badge.svg)](https://github.com/rixtrayker/go-backend-test/actions)
+[![Security](https://github.com/rixtrayker/go-backend-test/workflows/Security%20Scanning/badge.svg)](https://github.com/rixtrayker/go-backend-test/actions)
+
 ## Features
 
 ### Core Features

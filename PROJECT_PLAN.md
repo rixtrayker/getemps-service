@@ -755,7 +755,7 @@ DB_RETRY_DELAY=100  # milliseconds
 1. **Initialize Go Module**
    ```bash
    mkdir getemps-service && cd getemps-service
-   go mod init github.com/yourusername/getemps-service
+   go mod init github.com/rixtrayker/getemps-service
    ```
 
 2. **Install Dependencies**

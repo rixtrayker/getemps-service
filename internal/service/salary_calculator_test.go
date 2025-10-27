@@ -1,9 +1,9 @@
 package service
 
 import (
-    "testing"
+	"testing"
 
-    "github.com/yourusername/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
 // ============================================

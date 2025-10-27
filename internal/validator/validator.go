@@ -1,8 +1,8 @@
 package validator
 
 import (
-	"github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/yourusername/getemps-service/internal/models"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
 func ValidateEmployeeRequest(req models.EmployeeRequest) error {

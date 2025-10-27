@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourusername/getemps-service/internal/cache"
-	"github.com/yourusername/getemps-service/internal/models"
-	"github.com/yourusername/getemps-service/internal/repository"
+	"github.com/rixtrayker/getemps-service/internal/cache"
+	"github.com/rixtrayker/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/repository"
 )
 
 type ProcessStatusService struct {

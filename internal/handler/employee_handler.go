@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/getemps-service/internal/models"
-	"github.com/yourusername/getemps-service/internal/service"
-	"github.com/yourusername/getemps-service/internal/validator"
+	"github.com/rixtrayker/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/service"
+	"github.com/rixtrayker/getemps-service/internal/validator"
 )
 
 type EmployeeHandler struct {

@@ -1,4 +1,4 @@
-module github.com/yourusername/getemps-service
+module github.com/rixtrayker/getemps-service
 
 go 1.23.0
 

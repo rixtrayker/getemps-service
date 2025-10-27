@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/yourusername/getemps-service/internal/models"
+	"github.com/rixtrayker/getemps-service/internal/models"
 )
 
 type userRepository struct {

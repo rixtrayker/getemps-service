@@ -10,14 +10,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rixtrayker/getemps-service/internal/cache"
+	"github.com/rixtrayker/getemps-service/internal/config"
+	"github.com/rixtrayker/getemps-service/internal/database"
+	"github.com/rixtrayker/getemps-service/internal/handler"
+	"github.com/rixtrayker/getemps-service/internal/middleware"
+	"github.com/rixtrayker/getemps-service/internal/repository"
+	"github.com/rixtrayker/getemps-service/internal/service"
 	"github.com/sirupsen/logrus"
-	"github.com/yourusername/getemps-service/internal/cache"
-	"github.com/yourusername/getemps-service/internal/config"
-	"github.com/yourusername/getemps-service/internal/database"
-	"github.com/yourusername/getemps-service/internal/handler"
-	"github.com/yourusername/getemps-service/internal/middleware"
-	"github.com/yourusername/getemps-service/internal/repository"
-	"github.com/yourusername/getemps-service/internal/service"
 )
 
 func main() {
